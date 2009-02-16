@@ -1,0 +1,138 @@
+function icemain(ffile,tfile,ifile,type)
+%   MEMLS
+%   main program: brightness temperature of snowpack atop packice
+%     ffile:  Inputfile with frequency array [GHz]
+%     tfile:  Inputfile with incidence angle [deg]
+%     ifile: Inputfile with layer- number, temp [K], vol.water content, density [kg/m3], thickness [cm], cor.length [mm],  salinity [per mil], ice/snow[1/0]
+%     type:  ice first year = 3 or multiyear = 4
+%   Version history:
+%      1.0    wi 19.03.97
+%      2.0    wi 25.09.97 adapted to the new subroutines
+%      2.1    wi 15.10.97 adapted to the new subroutines
+%      2.2    wi 04.11.97 adapted to bug in polmix
+%   Copyright (c) 1997 by the Institute of Applied Physics, 
+%   University of Bern, Switzerland
+%   Extension to sea ice by rtt dmi.dk
+%   Revised by comparison to "Memls_mod.m" by tms space.dtu.dk
+
+%   Constants:
+%   sccho: type of scattering coefficient (11 recommended, 4=Born approximation spherical shape, 5=iborn for shells and spheres, now a function of type)
+%   s0h/s0v : snow-ice reflectivity H/V-pol = 0
+%   Tsky    : sky brightness temperature [K] = 0 (surface contribution to atmospheric total = radiometer sitting on ice)
+%   Tgnd    : ground temperature [K] = -1.8 C (ocean beneath sea ice)
+sccho=2;
+s0h=0;
+s0v=0;
+Tsky=0;
+Tgnd=271.35;
+
+frq1 = dlmread (ffile);
+frq = frq1(length(frq1)-5:length(frq1));
+frq
+tet1 = dlmread (tfile);
+tet = tet1(length(tet11)-5:length(tet1));
+tet
+tet = (tet * pi) / 180;
+
+eval (['load ',ifile]);
+eval (['di = ',ifile(1:6),'(:,5);']);
+i = find(di > 0);
+eval (['di = ',ifile(1:6),'(:,5);']);
+eval (['num = ',ifile(1:6),'(i,1);']);
+eval (['Ti = ',ifile(1:6),'(i,2);']);
+eval (['Wi = ',ifile(1:6),'(i,3);']);
+eval (['roi = ',ifile(1:6),'(i,4);']);
+eval (['pci = ',ifile(1:6),'(i,6);']);
+eval (['sal = ',ifile(1:6),'(i,7);']);
+eval (['si = ',ifile(1:6),'(i,8);']);
+
+% Change directory and output at machine precision
+cd Subroutine/Memls
+format long
+
+% Here, and in all subroutines: 'max(size(())' replaced with 'length()'
+N = length(num);
+if N == 0 
+   return
+end
+roi = roi./1000;
+
+%% = MISSING IN THE LATEST VERSION AND THEREFORE COMMENTED OUT
+%% di = di./100;
+
+%  loop over 6 AMSR H V polarized operating frequency
+for n=1:length(frq)
+  freq=frq(n);
+  teta=tet(n);
+freq
+
+% Absorption coefficient of all layers for calculating Teff
+  [epsi,epsii] = ro2epsd(roi,Ti,freq);
+  [epsi,epsii] = mixmod(freq,Ti,Wi,epsi,epsii);
+
+% Select dielectric scheme for FY or MY ice
+  fy=(type==3);
+  my=(type==4);
+  [epsi,epsii] = sie(fy,sal,Ti,freq,epsi,epsii);
+  [epsi,epsii] = mysie(my,roi,Ti,sal,freq,epsi,epsii);
+  [gai] = abscoeff(epsi,epsii,Ti,freq,Wi);
+
+  ns = sqrt(epsi);
+  tei = [asin(sin(teta)./ns);teta];
+  dei = pfadi(tei,di);
+  [sih,siv] = fresnelc(tei,[epsi;1]);
+%% [rnum,rroi,repsi,repsii,rtei,rsih,rsiv,rdi,rdei,rTi,rpci,rWi,rgai,rsi,rsal] = slred(num,roi,epsi,epsii,tei,sih,siv,di,dei,Ti,pci,freq,Wi,gai,si,sal);
+  [rnum,rroi,repsi,repsii,rtei,rsih,rsiv,rdi,rdei,rTi,rpci,rWi,rgai,rtype,rsal] = slred(num,roi,epsi,epsii,tei,sih,siv,di,dei,Ti,pci,freq,Wi,gai,type,sal);
+gai
+
+  [gbih,gbiv,gs6,ga2i] = sccoeff(rroi,rTi,rpci,freq,rWi,rgai,sccho);
+%% All snow is new and old, recrystallized snow is ignored
+%% rtype = 1;
+  rmeteo=(rtype==1);
+  rrecry=(rtype==2);
+  [gbih,gbiv,gs6,ga2i] = meteo_sc(rroi,rTi,rpci,freq,rWi,rgai,rmeteo,gbih,gbiv,gs6,ga2i);
+  [gbih,gbiv,gs6,ga2i] = recry_sc(rroi,rTi,rpci,freq,rWi,rgai,rrecry,gbih,gbiv,gs6,ga2i);
+
+% Select scattering module for MY or FY ice
+%% Type of ice is a predefined scalar
+%% rtype = type;
+  rfy=(rtype==3);
+  rmy=(rtype==4);
+  [gbih,gbiv,gs6,ga2i] =    scice(rfy,gbih,gbiv,gs6,ga2i,rTi,rsal,freq,rpci);
+  [gbih,gbiv,gs6,ga2i] = scice_my(rmy,gbih,gbiv,gs6,ga2i,rTi,rroi,freq,rpci,rsal);
+
+% Recompute 2-flux absorption coefficient (ga2i)
+  [gbih,gbiv,gs6,ga2i] = absorp2f(gbih,gbiv,gs6,ga2i,repsi,repsii,rroi,rTi,rpci,freq,rWi,rgai);
+  [rdei,rtei,tscat] = pfadc(teta,rdi,repsi,gs6);
+  rsih = [s0h;rsih];
+  rsiv = [s0v;rsiv];
+  [rsih,rsiv] = polmix(tscat,rsih,rsiv);
+  rtei.*180./pi;
+
+  [ri,ti] = rt(ga2i,gbih,rdei);
+  Dh   = layer(ri,rsih,ti,rTi,Tgnd,Tsky);
+% N = max(size(rroi));
+  N = length(rroi);
+  Tbh = (1-rsih(N+1))*Dh(N) + rsih(N+1)*Tsky;
+Tbh
+% Omit most of the below and the very last two sections: "emissivity" and "calculate emissivities"
+% yh(ifreq) = Tbh; 
+% tb(2*ifreq) = Tbh; 
+% [freq,N,Tbh];
+% [Dh;Tbh];
+
+  [ri,ti]  = rt(ga2i,gbiv,rdei);
+% tscat;
+% rsih;
+% rsiv;
+  Dv  = layer(ri,rsiv,ti,rTi,Tgnd,Tsky);
+  Tbv = (1-rsiv(N+1))*Dv(N) + rsiv(N+1)*Tsky;
+Tbv
+
+% tb(2*ifreq-1) = Tbv;
+% [freq,N,Tbv];
+% [Dv;Tbv];
+end
+
+% Change directory
+cd ../..

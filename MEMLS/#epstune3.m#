@@ -1,0 +1,126 @@
+function[] = epstune ()
+  epsi_snow = 1.5;
+  epsii_snow = 0.1;
+  
+  epsi_ice = 3.5;
+  epsii_ice = 0.2;
+  
+  epsi_s = linspace(1.5,3.5,30);
+  epsii_s = 0.15;
+  
+  
+ 
+  di_s = 0.05 ;% [m] snow depth
+  di_snow = 0.2;
+    frq = dlmread ('Freq-Memls-in.txt');
+    
+  cd Subroutine/Memls
+  format long
+  
+  for n=1:length(frq)
+    freq=frq(n);
+  
+  for m=1:30
+    epsi = [epsi_ice;epsi_s(m);epsi_snow];
+    epsii = [epsii_ice;epsii_s;epsii_snow];
+    ns =sqrt(epsi);
+    teta = 55;
+    teta = (teta*pi)/180;
+    tei= [asin(sin(teta)./ns);teta];
+    
+    [sih,siv] = fresnelc(tei,[epsi;1]);
+    gai = abscoeff(epsi,epsii,0,freq,0);
+    
+    dei=pfadi(tei,[di_s;di_snow]);
+             gamma = gai(2:3);
+             
+      t0i = exp(gamma .* dei .* (-1));
+      r0i = zeros(size(t0i));
+      ri =0 ;
+      ti = t0i;
+      
+      % H channel
+      roa_h = ri + sih(1)*ti(1)^2/(1-ri*sih(1));
+      rob_h = ri + sih(2)*ti(1)^2/(1-ri*sih(2));
+      
+      rsa_h(n,m) = sih(2)+(1-sih(2))^2*roa_h/(1-sih(2)*ri);
+      rsb_h(n,m) = sih(1)+(1-sih(1))^2*rob_h/(1-sih(1)*ri);
+      ts_h=ti(1)*(1-sih(1))*(1-sih(2))/((1-ri*sih(1))*(1-ri*sih(2))-ti(1)^2*sih(1)* ...
+                                     sih(2));
+      esa_h = 1- ts_h - rsa_h(n,m);
+      
+      %%%%%%%%%%%%%%%%%%%%%%%%%%
+      sih(2) = sih(3);
+      sih(1) = rsa_h(n,m);
+      
+      roa_h = ri + sih(1)*ti(2)^2/(1-ri*sih(1));
+      rob_h = ri + sih(2)*ti(2)^2/(1-ri*sih(2));
+      
+      rsa_h(n,m) = sih(2)+(1-sih(2))^2*roa_h/(1-sih(2)*ri);
+      rsb_h(n,m) = sih(1)+(1-sih(1))^2*rob_h/(1-sih(1)*ri);
+      ts_h=ti(2)*(1-sih(1))*(1-sih(2))/((1-ri*sih(1))*(1-ri*sih(2))-ti(2)^2*sih(1)* ...
+                                     sih(2));
+      esa_h = 1- ts_h - rsa_h(n,m);
+
+      
+      % V channel
+            % H channel
+      roa_v = ri + siv(1)*ti(1)^2/(1-ri*siv(1));
+      rob_v = ri + siv(2)*ti(1)^2/(1-ri*siv(2));
+      
+      rsa_v(n,m) = siv(2)+(1-siv(2))^2*roa_v/(1-siv(2)*ri);
+      rsb_v(n,m) = siv(1)+(1-siv(1))^2*rob_v/(1-siv(1)*ri);
+      ts_v=ti(1)*(1-siv(1))*(1-siv(2))/((1-ri*siv(1))*(1-ri*siv(2))-ti(1)^2*siv(1)* ...
+                                     siv(2));
+      esa_v = 1- ts_v - rsa_v(n,m);
+  
+
+      %%%%%%%%%%%%%%%%%%%%%%%%%%
+      siv(2) = siv(3);
+      siv(1) = rsa_v(n,m);
+      
+            roa_v = ri + siv(1)*ti(2)^2/(1-ri*siv(1));
+      rob_v = ri + siv(2)*ti(2)^2/(1-ri*siv(2));
+      
+      rsa_v(n,m) = siv(2)+(1-siv(2))^2*roa_v/(1-siv(2)*ri);
+      rsb_v(n,m) = siv(1)+(1-siv(1))^2*rob_v/(1-siv(1)*ri);
+      ts_v=ti(2)*(1-siv(1))*(1-siv(2))/((1-ri*siv(1))*(1-ri*siv(2))-ti(2)^2*siv(1)* ...
+                                     siv(2));
+      esa_v = 1- ts_v - rsa_v(n,m);
+
+
+
+  end
+  end
+  
+  cd ../..
+figure
+      hold on
+grid on
+  plot(epsi_s,rsa_h(1,:),'r');
+    plot(epsi_s,rsa_h(2,:),'g');
+      plot(epsi_s,rsa_h(3,:),'b');
+        plot(epsi_s,rsa_h(4,:),'m');
+          plot(epsi_s,rsa_h(5,:),'k');
+  hold off
+   legend('6H','11H','19H','24H','37H')
+    title('rs_H vs. real part of the dielectric constant of slushy layer');
+  xlabel('epsi');
+  ylabel('rs_H');
+
+  figure
+      hold on
+grid on
+  plot(epsi_s,rsa_v(1,:),'r');
+    plot(epsi_s,rsa_v(2,:),'g');
+      plot(epsi_s,rsa_v(3,:),'b');
+        plot(epsi_s,rsa_v(4,:),'m');
+          plot(epsi_s,rsa_v(5,:),'k');
+  hold off
+ legend('6V','11V','19V','24V','37V')
+    title('rs_V vs. real part of the dielectric constant of slushy layer');
+  xlabel('epsi');
+  ylabel('rs_V');
+
+  %  plot(epsi_s,rsa_v(1,:),'g');
+  

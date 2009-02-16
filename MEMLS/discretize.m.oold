@@ -1,0 +1,127 @@
+% ************************* Usage *****************************
+% output the memls layer profile file 
+% ************************* Input *****************************
+% intput_file of snow and ice with temp [K], density [kg/m3], thickness [cm], cor.length [mm],  salinity [per mil], ice/snow[1/0]
+% snow_layernums: numbers of snow layers
+% *************************Output*****************************
+% syntes.disc: output_file with layer- number, temp [K], vol.water content, density [kg/m3], thickness [cm], cor.length [mm],  salinity [per mil], ice/snow[1/0]
+
+function[]  = discretize (input_file,snow_layernums,output_file,ice_type)
+
+  Tsea=271.35;      %[K] 
+  ks=0.31;
+  k0=2.034;         %[W/m/K]
+  beta=0.117        %[W/m/per mil] 
+
+  in_file = load(input_file);
+  Ts_snow = in_file(2,1); 
+  roi_snow = in_file(2,2);
+  di_ice = in_file(1,3);
+  di_snow = in_file(2,3);
+  pci_ice = in_file(1,4);
+  pci_snow = in_file(2,4);
+  sal_ice = in_file(1,5);
+  
+  % Range of validity of surface tempurature of snow surface
+  if Ts_snow > 271.15
+    Ts_snow = 271.35;
+  elseif Ts_snow < 229.95
+    Ts_snow = 229.95;
+  end
+
+  T(1) = Tsea;
+  for i = 1:50
+      ki = k0 + (beta*sal_ice)/(T(1)+273.15); %conductivity of ice 
+   % ki = k0 + (beta*sal_ice)/T(1); %conductivity of ice 
+    slope = ki*di_ice/ks/di_snow; %Ratio between the temperature gradients in ice and snow
+    T0(1) = (Ts_snow + slope*Tsea)/(1 + slope); %Temperature of the interface of
+                                                %snow and ice
+    slope2 = (T0(1)-Tsea)/di_ice; % temperature gradient of ice layer
+    if abs(slope2) > 0.1
+      slope2 = slope/abs(slope)*0.1;
+      T0(1) = Tsea+slope2*di_ice;
+    end
+    
+    slope3 = (Ts_snow-T0(1))/di_snow;  % temperture slope of snow layer
+    
+    T(1) = Tsea+slope2*di_ice/2;
+    T(2) = T0(1)+slope3*di_snow/2;
+    
+    T(1) = (Tsea+T(1))/2;  % mean value of ice temperature
+                           %T0(2)=T0(1)
+  end 
+  
+  T=T0(1);
+  T_ice=T(1);
+  delta_T1 = (T - Ts_snow)/snow_layernums; 
+  delta_T2 = Tsea - T;
+  Ti(1) = Tsea - delta_T2/2;
+
+  T0 = abs(T_ice - 273.15);
+  if T0<1
+    W_ice = 1e-3*sal_ice*49.719;
+  else 
+    W_ice = 1e-3*sal_ice*(-49.185/T_ice+0.532);
+  end
+  
+  for i = 1:(snow_layernums+1)
+    Ti(i+1) = T - (i-1)*delta_T1;
+  end
+
+  for i = 1:(snow_layernums)
+    Ti(i+1) = (Ti(i+1) + Ti(i+2))/2;
+  end
+
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+  layer_num = [1:snow_layernums+1];
+  W = [W_ice,zeros(1,snow_layernums)];
+
+  if ice_type==1 %MY
+    if di_ice >= 0.25
+      pci_MY = 0.35;
+    else 
+      pci_MY = (0.35*0.25+0.25*(di_ice-0.25))/di_ice;
+    end
+    roi_MY = 918;
+
+    roi = [roi_MY,roi_snow*ones(1,snow_layernums)];
+    di = [di_ice,di_snow/snow_layernums*ones(1,snow_layernums)];
+    pci = [pci_MY,pci_snow*ones(1,snow_layernums)];
+    sal = [sal_ice,zeros(1,snow_layernums)];
+    si = [1,zeros(1,snow_layernums)];
+
+    fid = fopen(output_file,'wt');
+    output = [layer_num;Ti(1:snow_layernums+1);W;roi;di;pci;sal;si];
+    fprintf(fid,'%3d %3.12f %3.12f %4.12f %4.15f %4.15f %3.15f %2d\n', output);
+    fclose(fid);
+    
+    fid = fopen('input_MY', 'wt');
+    MY_input = [Tsea,Ts_snow;roi_MY,roi_snow;di_ice,di_snow;pci_MY,pci_snow;sal_ice,0];
+    fprintf(fid,'%3.12f %3.12f %4.12f %4.15f %4.15f\n',MY_input);
+    fclose(fid);
+
+  end
+
+  if ice_type==2 %FY
+    
+    pci_FY = 0.8*(3*W_ice/(4*3.14))^0.333;
+    roi_FY = 920;
+    
+    roi = [roi_FY,roi_snow*ones(1,snow_layernums)];
+    di = [di_ice,di_snow/snow_layernums*ones(1,snow_layernums)];
+    pci = [pci_FY,pci_snow*ones(1,snow_layernums)];
+    sal = [sal_ice,zeros(1,snow_layernums)];
+    si = [1,zeros(1,snow_layernums)];
+
+    fid = fopen(output_file,'wt');
+    output = [layer_num;Ti(1:snow_layernums+1);W;roi;di;pci;sal;si];
+    fprintf(fid,'%3d %3.12f %3.12f %4.12f %4.15f %4.15f %3.15f %2d\n', output);
+    fclose(fid);
+    
+    fid = fopen('input_FY', 'wt');
+    FY_input = [Tsea,Ts_snow;roi_FY,roi_snow;di_ice,di_snow;pci_FY,pci_snow;sal_ice,0];
+    fprintf(fid,'%3.12f %3.12f %4.12f %4.15f %4.15f\n',FY_input);
+    fclose(fid);
+
+  end
