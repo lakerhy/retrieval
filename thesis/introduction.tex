@@ -1,0 +1,22 @@
+
+\chapter{Introduction}
+\label{ch_intro}
+
+% \section{Background}
+% \label{sec:bg}
+The retrieval of snow depth information from passive microwave brightness temperature is very important to the geophysical study of Arctic areas. Its high albedo greatly impacts the global radiation balance due to its positive feedback to the climate change. If the climate becomes warmer, the snow is melted which decreases the reflected solar radiation and in turn the climate will become even warmer. On the other hand, colder climate leads to more snow which makes the climate more cooler. And the water content represented by the snow packs is a key variable of the hydrological cycle. The melting snow is the input of freshwater which changes the salinity of the ocean. The snow cover also dramatically changes the microwave signature of the beneath sea ice. The ice concentration estimation thus suffers from errors if excluding the snow packs covering. For all these reasons, it is neccessary to obtain the seasonal and geographical distribution of the snow depth on high altitude areas. \\
+The current snow depth retrieval can be divided into three categories. 
+\begin{enumerate}
+\item Retrieval methods by means of the brightness temperature gradient. This kind of method takes use of the scattering difference under various frequency bands while neglecting the inner physical characteristics of the snow pack. They can only used on the first year (FY) ice because of the microwave signature resemblance of snow and multiple year (MY) ice. The physical change of the snow will then result in errors in the snow depth estimation. The effect of snow grain size and density on the snow depth retrieval is discussed in Markus's paper[ref].
+\item Retrieval methods using empirical/semi-empirical models like the HUT model[ref]. HUT model is the thermal emission model developed for the applications of snow covered terrain by Helsinki University of Technology. The effects of forest canopy and the soil on the brightness temperature is estimated by empirical or semi empirical formulas. The snow is considered to be a whole layer. The forward scattering of snow is a constant and the extinction coefficient is a function of the grain size and the frequency. HUT thus can't handle the vertical change of the snow packs and its use under high frequencies should be more careful due to the shallow penetration depth which is less than the snow depth.    
+\item Retrieval methods using fully parametrized emission model for snow like MEMLS. MEMLS stands for the microwave emission model of layered snowpacks. The snowpacks are inhomogeneous and strongly layered. Noticeable change on brightness temperature will occur even for slight change of the absorption and scattering coefficients. It is more physically and radiometrically correct for the snowpacks to be processed in the structure of layers which characterized by the individual layer density, grain size, physical temperature, water content and depth. Mätzler [ref] shows that MEMLS correctly stimulates the brightness temperature of snow on the black body and on metal plate. Rasmus Tanboe extends MEMLS to the application on sea ice [ref]. The advantage of MEMLS for the snow cover lies not only on its correct brightness temperature simulation, but also on its realistic reflection of the snow characteristics which mark the meteorological changes in the history.   
+\end{enumerate}
+Three kinds of data set classified by the spatial resolution can be used for snow depth retrieval of Arctic area :
+\begin{enumerate}
+\item Surfaced based measurements. The spatial resolution is between 1 to 2 meters. Accurate local microwave signature can be achieved and interpreted along with the physical properties of the location.
+\item Aircraft based measurements. The spatial resolution is between 10 to 100 meters.  Various ice type and ice features can be captured in the radiometric signature. 
+\item Satellite based measurements. The spatial resolution is between 15 to 30 km. The areal variation can not be detected. While the ice concentration and ice type can be well determined by its large footprint scale. The large footprint also demands a general emission model for the snow covered ice. MEMLS as a model devoid of any free parameters is then suitable to stimulate the brightness temperature contribution at the surface. 
+\end{enumerate}
+[Followed by a brief introduction of what each chapter deals with.]
+
+

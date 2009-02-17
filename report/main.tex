@@ -1,0 +1,82 @@
+\documentclass[11pt,a4paper]{report}
+
+\usepackage[ansinew]{inputenc} % tegnsæt
+
+\usepackage[T1]{fontenc} % fonte
+\usepackage{graphicx} % indsættelse af billeder
+
+\usepackage[square]{natbib} % til \cite
+%\usepackage{harvard}
+
+%\usepackage{verbatim} %
+\usepackage{shortvrb} % bruges til at lave en nem | med
+\usepackage{amsmath,amssymb} % matematiske symboler
+\usepackage{textcomp,calc} %bruges til eksemplerne
+
+% Gør at man kan skifte font med | og at teksten er verbatim'ed:
+\newcommand{\lodret}{|} %SKAL stå før \MakeShortVerb
+\MakeShortVerb{\|}
+
+% Farverne på links
+\usepackage{url} %til bibliografien. sætter det i en verbatim-agtig font
+\usepackage{prettyref} % underline'r referencer og gør dem klikbare
+\usepackage[usenames]{color}
+\usepackage[colorlinks,linkcolor={blue},citecolor={blue},urlcolor={blue}]{hyperref}
+
+%\addtolength{\hoffset}{-1.2cm} % Left margin.
+%\addtolength{\voffset}{-1.5cm} % How far "Chapter x" should be lowered.
+%\addtolength{\textwidth}{2.5cm} % Right margin.
+%\addtolength{\textheight}{2.0cm} % Bottom?
+
+% \billede{!hbtp}{0.9}{filnavn}{caption}
+\newcommand*{\billede}[4]{
+    \begin{figure}[#1]\begin{center}
+    \includegraphics[width=#2\textwidth]{billeder/#3}
+    \caption{#4}\label{fig:#3}
+    \end{center}\end{figure}
+}
+
+% \billedeorg{!hbtp}{filnavn}{caption}
+\newcommand*{\billedeorg}[3]{
+    \begin{figure}[#1]\begin{center}
+    \includegraphics{billeder/#2}
+    \caption{#3}\label{fig:#2}
+    \end{center}\end{figure}
+}
+
+% \newcommand{\ms}{Microsoft} % kaldes med "\ms{}" som giver "Microsoft"
+% \newcommand{\MS}{Microsoft}
+% \newcommand{\mss}{Microsofts}
+% \newcommand{\os}{open source}
+% \newcommand{\OS}{Open Source}
+% \newcommand{\oss}{open source-samfundet}
+
+% \usepackage{marvosym}
+
+\pagestyle{headings}
+
+\begin{document}
+\input{forward}
+\input{abstract}
+\pagenumbering{roman} % skifter sidetal til "romertal"
+\tableofcontents
+\listoffigures %indsætter automatisk en liste over alle figurer
+\listoftables %indsætter automatisk en liste over alle tabeller
+\newpage
+\input{introduction}
+\input{theory}
+\input{evaluation}
+\input{conclusion}
+\clearpage
+\include{biblio}
+\newpage
+\renewcommand\appendixname{Appendiks} % Ændrer ``Bilag'' til ``Appendiks''.
+\pagenumbering{alph} \appendix
+\addcontentsline{toc}{chapter}{Appendix}
+\input{matlab_code}
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 

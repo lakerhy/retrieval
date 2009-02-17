@@ -1,0 +1,205 @@
+function[] = dist (filename)
+cd ../MEMLS/Data
+  buffer = load(filename);
+f1V = buffer(:,6); % 6
+f1H = buffer(:,7);% 17
+f2V = buffer(:,8);
+f2H = buffer(:,9);
+f3V = buffer(:,10); % 6
+f3H = buffer(:,11);% 17
+f4V = buffer(:,12);
+f4H = buffer(:,13);
+f5V = buffer(:,14); % 6
+f5H = buffer(:,15);% 17
+
+f1Vmean = mean(f1V);
+f1Hmean = mean(f1H);
+f2Vmean = mean(f2V);
+f2Hmean = mean(f2H);
+f3Vmean = mean(f3V);
+f3Hmean = mean(f3H);
+f4Vmean = mean(f4V);
+f4Hmean = mean(f4H);
+f5Vmean = mean(f5V);
+f5Hmean = mean(f5H);
+
+
+cd ../../stat
+
+num = size(f1V);
+f1pol = f1V-f1H;
+f2pol = f2V-f2H;
+f3pol = f3V-f3H;
+f4pol = f4V-f4H;
+f5pol = f5V-f5H;
+
+pol1mean = mean(f1pol);
+pol2mean = mean(f2pol);
+pol3mean = mean(f3pol);
+pol4mean = mean(f4pol);
+pol5mean = mean(f5pol);
+
+%    legend('6.9G','10.7G','18.7G','23.8G','36.5G');
+% figure 
+% subplot(2,1,1);
+% hold on
+% plot(1:num,ones(1,num)*f1Hmean,'k');
+% plot(1:num,f1H,'wd','MarkerFaceColor','r','MarkerSize',6);
+% title(['Tb ',filename]);
+% xlabel('sample nr.');
+% ylabel('Tb')
+% legend('6.9H','mean');
+% hold off
+
+% subplot(2,1,2);
+% hold on
+% plot(1:num,ones(1,num)*f1Vmean,'k');
+% plot(1:num,f1V,'wd','MarkerFaceColor','r','MarkerSize',6);
+% title(['Tb ',filename]);
+% xlabel('sample nr.');
+% ylabel('Tb')
+% legend('6.9V','mean');
+% hold off
+
+% figure
+% subplot(2,1,1);
+% hold on
+
+% plot(1:num,f2H,'wd','MarkerFaceColor','r','MarkerSize',6);
+% plot(1:num,ones(1,num)*f2Hmean,'k');
+% title(['Tb of ',filename]);
+% xlabel('sample nr.');
+% ylabel('Tb');
+% legend('11H','mean');
+% hold off
+
+% subplot(2,1,2);
+% hold on
+% plot(1:num,f2V,'wd','MarkerFaceColor','r','MarkerSize',6);
+% plot(1:num,ones(1,num)*f2Vmean,'k');
+% title(['Tb of ',filename]);
+% xlabel('sample nr.');
+% ylabel('Tb');
+% legend('11G','mean');
+% hold off
+
+% figure
+% subplot(2,1,1);
+% hold on
+
+% plot(1:num,f3H,'wd','MarkerFaceColor','r','MarkerSize',6);
+% plot(1:num,ones(1,num)*f3Hmean,'k');
+% title(['Tb of ',filename]);
+% xlabel('sample nr.');
+% ylabel('Tb');
+% legend('19G','mean');
+% hold off
+
+% subplot(2,1,2);
+% hold on
+
+% plot(1:num,f4V,'wd','MarkerFaceColor','r','MarkerSize',6);
+% plot(1:num,ones(1,num)*f4Vmean,'k');
+% title(['Tb of ',filename]);
+% xlabel('sample nr.');
+% ylabel('Tb');
+% legend('19V','mean');
+% hold off
+
+% figure
+% subplot(2,1,1);
+% hold on
+
+% plot(1:num,f4H,'wd','MarkerFaceColor','r','MarkerSize',6);
+% plot(1:num,ones(1,num)*f4Hmean,'k');
+% title(['Tb of ',filename]);
+% xlabel('sample nr.');
+% ylabel('Tb');
+% legend('24H','mean');
+% hold off
+
+% subplot(2,1,2);
+% hold on
+
+% plot(1:num,f4V,'wd','MarkerFaceColor','r','MarkerSize',6);
+% plot(1:num,ones(1,num)*f4Vmean,'k');
+% title(['Tb of ',filename]);
+% xlabel('sample nr.');
+% ylabel('Tb');
+% legend('24V','mean');
+% hold off
+% figure
+% subplot(2,1,1);
+% hold on
+
+% plot(1:num,f5H,'wd','MarkerFaceColor','r','MarkerSize',6);
+% plot(1:num,ones(1,num)*f5Hmean,'k');
+% title(['Tb of ',filename]);
+% xlabel('sample nr.');
+% ylabel('Tb');
+% legend('37H','mean');
+% hold off
+
+% subplot(2,1,2);
+% hold on
+
+% plot(1:num,f5V,'wd','MarkerFaceColor','r','MarkerSize',6);
+% plot(1:num,ones(1,num)*f5Vmean,'k');
+% title(['Tb of ',filename]);
+% xlabel('sample nr.');
+% ylabel('Tb');
+% legend('37V','mean');
+% hold off
+
+figure 
+subplot(3,2,1);
+hold on
+plot(1:num,ones(1,num)*pol1mean,'k');
+plot(1:num,f1pol,'wd','MarkerFaceColor','r','MarkerSize',6);
+title(['pol. of ',filename]);
+xlabel('sample nr.');
+ylabel('Pol.')
+legend('6.9G');
+hold off
+
+subplot(3,2,2);
+hold on
+plot(1:num,ones(1,num)*pol2mean,'k');
+plot(1:num,f2pol,'wd','MarkerFaceColor','r','MarkerSize',6);
+title(['pol. of ',filename]);
+xlabel('sample nr.');
+
+ylabel('Pol');
+legend('11G');
+hold off
+
+subplot(3,2,3);
+hold on
+plot(1:num,ones(1,num)*pol3mean,'k');
+plot(1:num,f3pol,'wd','MarkerFaceColor','r','MarkerSize',6);
+title(['pol. of ',filename]);
+xlabel('sample nr.');
+ylabel('Pol');
+legend('19G');
+hold off
+
+subplot(3,2,4);
+hold on
+plot(1:num,ones(1,num)*pol4mean,'k');
+plot(1:num,f4pol,'wd','MarkerFaceColor','r','MarkerSize',6);
+title(['pol. of ',filename]);
+xlabel('sample nr.');
+ylabel('Pol');
+legend('24G');
+hold off
+
+subplot(3,2,5);
+hold on
+plot(1:num,ones(1,num)*pol5mean,'k');
+plot(1:num,f5pol,'wd','MarkerFaceColor','r','MarkerSize',6);
+title(['pol. of ',filename]);
+xlabel('sample nr.');
+ylabel('Pol');
+legend('37G');
+hold off
+

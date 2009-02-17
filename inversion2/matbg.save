@@ -1,0 +1,6 @@
+#!/usr/bin/bash 
+# Clear the DISPLAY.
+# Call MATLAB with the appropriate input and output,
+# make it immune to hangups and quits using ''nohup'',
+# and run it in the background.
+nohup matlab < $1 > $2 &

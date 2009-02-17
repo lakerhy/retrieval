@@ -1,0 +1,14 @@
+\contentsline {chapter}{\numberline {1}Introduction}{4}{chapter.1}
+\contentsline {chapter}{\numberline {2}Emission model}{6}{chapter.2}
+\contentsline {section}{\numberline {2.1}Sandwich emission model}{6}{section.2.1}
+\contentsline {subsection}{\numberline {2.1.1}Method used by MEMLS}{6}{subsection.2.1.1}
+\contentsline {subsection}{\numberline {2.1.2}Impedance matching}{9}{subsection.2.1.2}
+\contentsline {subsection}{\numberline {2.1.3}Comparison}{12}{subsection.2.1.3}
+\contentsline {section}{\numberline {2.2}Multiple layers}{14}{section.2.2}
+\contentsline {subsection}{\numberline {2.2.1}Method used by MEMLS}{14}{subsection.2.2.1}
+\contentsline {subsection}{\numberline {2.2.2}Impedance matching}{16}{subsection.2.2.2}
+\contentsline {subsection}{\numberline {2.2.3}Comparison}{16}{subsection.2.2.3}
+\contentsline {chapter}{\numberline {3}Translation from physical properties to dielectric constant}{17}{chapter.3}
+\contentsline {chapter}{\numberline {4}AMSR data}{18}{chapter.4}
+\contentsline {section}{\numberline {4.1}AMSR introduction}{18}{section.4.1}
+\contentsline {section}{\numberline {4.2}AMSR data statistical analysis}{18}{section.4.2}

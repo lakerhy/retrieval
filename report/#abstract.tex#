@@ -1,0 +1,43 @@
+\begin{abstract}
+\thispagestyle{empty} \noindent{}
+This report discusses a 
+% The debate about pros and cons of
+% open source software and proprietary software has increased
+% remarkable the last few years. Today we see an increasing number
+% of software solutions based on open source software and it appears
+% that more are to come. This come true due to the fact that big
+% players in the software market have adjusted their business models
+% to meet the requirements of open source software. This report
+% looks at the theoretical aspects that forms different business
+% models used in the software market.
+
+% Empirical cases from the software industry involves studies on
+% Microsoft, Netscape, Apache, Red Hat and other interested parties.
+% It is shown how software companies can make money on producing
+% proprietary software, changing from proprietary software to open
+% source software or producing open source software.
+
+% Finally a discussion of the different business models and
+% approaches with respect to the theory and the analyzed cases are
+% presented. We find that there are many ways to expand the profit
+% when producing open source software. We also find that although
+% open source software is becoming more and more mature, there is a
+% demand for major players to vouch for complete software systems.
+% Another finding is that despite open source software is free to
+% download, the total cost of ownership might equal the expenses of
+% proprietary software, seen from a users point of view. From a
+% developers point of view, there can be several advantages of
+% switching to develop open source software, such as lower
+% development cost, risk spreading etc. The disadvantages include
+% organization and implementation problems, and -- in some cases --
+% unmature software. We believe that business models based on open
+% source software will overcome many of these disadvantages in the
+% future, and that it will turn out to be a indispensable competitor
+% to proprietary software.
+
+\paragraph{Keywords:} MEMLS, Model, Thing
+\end{abstract}
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End: 
